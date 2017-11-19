@@ -1,0 +1,46 @@
+#+TITLE: local desktop database
+#+SETUPFILE: ~/Notes/common.org
+#+SETUPFILE: ~/Notes/latex.org
+#+SETUPFILE: ~/Notes/coding.org
+
+see also: [[file:~/Install/configs/zotero/zotero.note]]
+
+* Memo
+** [2017-11-19 Sun] zotero sqlite数据库结构
+- [[https://github.com/zotero/zotero/blob/master/resource/schema/userdata.sql][zotero/userdata.sql at master · zotero/zotero]]
+** [2017-11-17 Fri] 几个相关工具
+- [[https://github.com/rdiaz02/Zotero-to-Referey][rdiaz02/Zotero-to-Referey: Convert Zotero db to use Referey]]
+- [[https://github.com/whacked/calibre-mode][whacked/calibre-mode: query calibre from emacs, useful for referencing work]]
+- [[https://github.com/smathot/qnotero][smathot/qnotero: Standalone sidekick to the Zotero reference manager (Qt4 version)]]
+- [[https://github.com/whacked/zotero-query.el][whacked/zotero-query.el: query zotero.sqlite from emacs without MozRepl]]
+- zotscan.py: [[https://gist.github.com/pkienzle/ea9c15362abe3f63773a][scan zotero database for missing attachments]]
+
+* src
+:PROPERTIES:
+:header-args: :tangle /tmp/test.py :comments link :padline yes :mkdirp yes :shebang #! /usr/bin/env python3
+:END:
+** header
+#+name: 60effdbd-c99a-4f7e-b2b5-ccb95a6577f2
+#+begin_src python
+  #===============================================================================#
+  #   DESCRIPTION:  ---
+  #
+  #       OPTIONS:  ---
+  #  REQUIREMENTS:  ---
+  #         NOTES:  ---
+  #        AUTHOR:  Wenping Guo <ybyygu@gmail.com>
+  #       LICENCE:  GPL version 2 or upper
+  #       CREATED:  <2017-10-16 Mon 14:45>
+  #       UPDATED:  <>
+  #===============================================================================#
+#+end_src
+
+** zotero database
+目标:
+- 输入: zotero://select/items
+- 输出: 该条目下对应的PDF文件
+
+* Local variables
+# Local Variables:
+# mode: org
+# end:
