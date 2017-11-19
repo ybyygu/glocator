@@ -1,4 +1,4 @@
-#+TITLE: local desktop database
+#+TITLE: fast document localor for personal library (zotero, calibre, ...)
 #+SETUPFILE: ~/Notes/common.org
 #+SETUPFILE: ~/Notes/latex.org
 #+SETUPFILE: ~/Notes/coding.org
@@ -6,14 +6,22 @@
 see also: [[file:~/Install/configs/zotero/zotero.note]]
 
 * Memo
+** TODO [2017-11-19 Sun] 从zotero standalone读出database路径
+: /home/ybyygu/.zotero/zotero/fc3z09qc.default/prefs.js
+- [[https://github.com/jbaiter/zotero-cli/blob/master/zotero_cli/cli.py][zotero-cli/cli.py at master · jbaiter/zotero-cli]]
+
 ** [2017-11-19 Sun] zotero sqlite数据库结构
 - [[https://github.com/zotero/zotero/blob/master/resource/schema/userdata.sql][zotero/userdata.sql at master · zotero/zotero]]
+
 ** [2017-11-17 Fri] 几个相关工具
+- [[https://github.com/jbaiter/zotero-cli][jbaiter/zotero-cli: Command-line interface for Zotero]] [[zotero://select/items/0_FNNH3MKZ][@Baiter2017]]
 - [[https://github.com/rdiaz02/Zotero-to-Referey][rdiaz02/Zotero-to-Referey: Convert Zotero db to use Referey]]
 - [[https://github.com/whacked/calibre-mode][whacked/calibre-mode: query calibre from emacs, useful for referencing work]]
 - [[https://github.com/smathot/qnotero][smathot/qnotero: Standalone sidekick to the Zotero reference manager (Qt4 version)]]
 - [[https://github.com/whacked/zotero-query.el][whacked/zotero-query.el: query zotero.sqlite from emacs without MozRepl]]
+- zotserver: A standalone Zotero web server [[zotero://select/items/0_XBUYF5IL][@wolfprogrammer2016]]
 - zotscan.py: [[https://gist.github.com/pkienzle/ea9c15362abe3f63773a][scan zotero database for missing attachments]]
+
 
 * src
 :PROPERTIES:
@@ -35,10 +43,50 @@ see also: [[file:~/Install/configs/zotero/zotero.note]]
   #===============================================================================#
 #+end_src
 
+** globals
+#+name: 9844612f-9f1d-4f9d-a4ce-c04bfca62610
+#+begin_src python
+  import os
+  import sqlite3
+
+  ZOTERO_DB_FILENAME = os.path.expanduser("~/Data/zotero/zotero.sqlite.bak")
+#+end_src
+
 ** zotero database
 目标:
 - 输入: zotero://select/items
 - 输出: 该条目下对应的PDF文件
+
+*** test
+#+name: 72722bc5-b5c6-485f-9b99-07df482ba3d2
+#+begin_src python
+  # attachment item
+  # zotero://select/items/1_2HQN5BHJ
+  sql_query = """
+  SELECT    items.itemID, items.key, itemAttachments.path, itemAttachments.contentType
+  FROM      items, itemAttachments
+  WHERE     itemAttachments.ItemID  = items.itemID
+            and itemAttachments.contentType = "application/pdf"
+            and items.key = "2HQN5BHJ"
+  """
+
+  # zotero://select/items/1_NIUYMGLJ
+  # article item
+  sql_query_pdf = """
+  SELECT    items.itemID, items.key, itemAttachments.parentItemID, itemAttachments.path, itemAttachments.contentType
+  FROM      items, itemAttachments
+  WHERE     itemAttachments.parentItemID  = items.itemID
+            and itemAttachments.contentType = "application/pdf"
+            and items.key = "NIUYMGLJ"
+  """
+
+  def test(db_filename=ZOTERO_DB_FILENAME, sql_query=sql_query):
+      with sqlite3.connect(db_filename) as conn:
+          cursor = conn.cursor()
+          cursor.execute(sql_query)
+          for row in cursor.fetchall():
+              print(row)
+#+end_src
 
 * Local variables
 # Local Variables:
